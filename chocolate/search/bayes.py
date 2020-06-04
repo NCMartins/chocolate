@@ -24,6 +24,7 @@ class Bayes(SearchAlgorithm):
             provided space and the space in the database, completely clear the
             database and set set the space to the provided one.
         n_bootstrap: The number of random iteration done before using gaussian processes.
+        kernel: kernel to be used. Default is None.
         utility_function (str): The acquisition function used for the bayesian optimization.
             Two functions are implemented: "ucb" and "ei".
         kappa: Kappa parameter for the UCB acquisition function.
@@ -32,10 +33,10 @@ class Bayes(SearchAlgorithm):
     .. [Lévesque2017] Lévesque, Durand, Gagné and Sabourin. Bayesian Optimization for
        Conditional Hyperparameter Spaces. 2017
     """
-    def __init__(self, connection, space, crossvalidation=None, clear_db=False, n_bootstrap=10, utility_function="ucb", kappa=2.756,
-                 xi=0.1):
+    def __init__(self, connection, space, crossvalidation=None, clear_db=False, n_bootstrap=10, kernel=None, utility_function="ucb", kappa=2.756,
+                 xi=0.01):
         super(Bayes, self).__init__(connection, space, crossvalidation, clear_db)
-        self.k = None
+        self.k = kernel
         if len(self.space.subspaces()) > 1:
             self.k = kernels.ConditionalKernel(self.space)
         self.n_bootstrap = n_bootstrap
